@@ -1,0 +1,20 @@
+
+CREATE INDEX idx_Mileage ON Vehicle(Mileage);
+
+CREATE INDEX idx_VVehicleStatusID ON Vehicle(VehicleStatusID);
+CREATE INDEX idx_VS_Vehiclestatus ON Vehicle_Status(VEHICLESTATUS);
+
+CREATE INDEX idx_CustCustomerType ON Customer(CUSTOMERTYPE);
+
+
+CREATE INDEX idx_VehicleCurrentAgencyID ON Vehicle(CURRENTAGENCYID);
+CREATE INDEX idx_RentalAgencyCity ON Rental_Agency(City);
+
+
+CREATE INDEX idx_Make ON Vehicle(Make);
+
+
+CREATE INDEX idx_EZPLUSEARNEDPOINTS ON EZPLUS(EZPLUSEARNEDPOINTS);
+
+CREATE INDEX idx_YEAR ON VEHICLE(YEAR); 
+

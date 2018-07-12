@@ -1,0 +1,55 @@
+Select Min(Mileage), MAKE, MODEL, YEAR, DAILYRENTALCOST
+from Vehicle 
+Where Mileage < 1000 group by MAKE, MODEL, YEAR, DAILYRENTALCOST;
+
+Select Vehicle.Make, VEHICLE.Model ,Vehicle_Status.VEHICLESTATUS, Vehicle_Status.VEHICLESTATUSID
+from Vehicle
+Inner JOIN Vehicle_Status ON Vehicle.VEHICLESTATUSID = Vehicle_Status.VEHICLESTATUSID
+Where VEHICLESTATUS = 'Available';
+
+Select * 
+from Customer 
+Where CUSTOMERTYPE = 'Private';
+
+Select Rental_Agency.City, Vehicle.Model, Vehicle.Make, Vehicle.CURRENTAGENCYID
+from RENTAL_AGENCY
+Inner Join Vehicle ON RENTAL_AGENCY.AGENCYID = Vehicle.CURRENTAGENCYID
+Where RENTAL_AGENCY.CITY = 'Brooklyn';
+
+Select Vehicle.Make, Model, Car.Trunkcapacity
+from Vehicle 
+Inner Join Car ON Vehicle.VINNUMBER = Car.CVINNUMBER
+Where Make = 'Ford';
+
+Select * 
+from CREDITCARD
+Where CARDNUM = 1254789632154856;
+
+select ezplusearnedpoints 
+from EZPLUS
+where EZPLUSNUMBER = 3652789415;
+
+Select discountdesc 
+from discount 
+where DISCOUNTCODE = 1254789584;
+
+Select SUM(ezplusearnedpoints)
+from EZPLUS;
+
+Select VINNUMBER ,
+MAKE ,
+MODEL ,
+YEAR ,
+RENTALCATEGORYID ,
+COLOR ,
+PLATENUMBER ,
+MILEAGE ,
+TRANSMISSIONTYPE ,
+SEATCAPACITY ,
+DAILYRENTALCOST ,
+VEHICLESTATUSID ,
+ASSIGNEDAGENCYID ,
+CURRENTAGENCYID ,
+VEHICLETYPE 
+from VEHICLE
+Where Year = 2018;

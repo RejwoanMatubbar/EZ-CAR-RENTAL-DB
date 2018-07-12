@@ -1,0 +1,41 @@
+CREATE VIEW Vehicle_Mileage AS
+Select Mileage, MAKE, MODEL, YEAR, DAILYRENTALCOST
+from Vehicle ;
+
+CREATE VIEW Vehicle_Availability AS
+Select Vehicle.Make, VEHICLE.Model ,Vehicle_Status.VEHICLESTATUS, Vehicle_Status.VEHICLESTATUSID
+from Vehicle
+INNER JOIN Vehicle_Status ON Vehicle.VEHICLESTATUSID = Vehicle_Status.VEHICLESTATUSID;
+
+CREATE VIEW Customer_Type AS
+Select * 
+from Customer ;
+
+CREATE VIEW VehicleAgency_Location AS
+Select Rental_Agency.City, Vehicle.Model, Vehicle.Make, Vehicle.CURRENTAGENCYID
+from RENTAL_AGENCY
+Inner Join Vehicle ON RENTAL_AGENCY.AGENCYID = Vehicle.CURRENTAGENCYID;
+
+CREATE VIEW Vehicle_Trunk AS
+Select Vehicle.Make, Model, Car.Trunkcapacity
+from Vehicle 
+Inner Join Car ON Vehicle.VINNUMBER = Car.CVINNUMBER;
+
+CREATE VIEW CREDITCARD_NUM AS
+Select * 
+from CREDITCARD;
+
+CREATE VIEW EZPLUSPOINTS_NUMBER AS
+select ezplusearnedpoints 
+from EZPLUS;
+
+CREATE VIEW DISCOUNT_CODE AS
+Select discountdesc 
+from discount ;
+
+CREATE VIEW Vehicle_Info AS
+Select *
+from VEHICLE;
+
+
+

@@ -1,0 +1,311 @@
+CREATE OR REPLACE PROCEDURE usp_VehicleByMileage (p_Mileage IN NUMBER)
+IS 
+ v_Mileage NUMBER(5,0);
+ v_Make VARCHAR2(25);
+ v_Model VARCHAR2(30);
+ v_Year NUMBER(4,0);
+ v_DailyRentalCost NUMBER(5,0);
+ CURSOR cur_Vehicle IS 
+ Select Min(Mileage), MAKE, MODEL, YEAR, DAILYRENTALCOST
+from Vehicle 
+Where p_Mileage < 1000 group by MAKE, MODEL, YEAR, DAILYRENTALCOST;
+BEGIN OPEN cur_Vehicle;
+LOOP 
+FETCH cur_Vehicle INTO v_Mileage ,
+ v_Make ,
+ v_Model ,
+ v_Year ,
+ v_DailyRentalCost ;
+ EXIT WHEN cur_Vehicle%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Vehicle Info: ' ||v_Mileage||' '||v_Make||' '||v_Model||' '||v_Year||' '||v_DailyRentalCost);
+ END LOOP;
+ CLOSE cur_Vehicle;
+ END usp_VehicleByMileage;
+ 
+ SET SERVEROUTPUT ON;
+ EXECUTE usp_VehicleByMileage(999);
+
+
+CREATE OR REPLACE PROCEDURE usp_VehicleByStatus (p_VehicleStatus IN CHAR)
+IS 
+ v_VehicleMake VARCHAR2(25);
+ v_VehicleModel VARCHAR2(30);
+ v_VehicleStatusVS VARCHAR2(15);
+ v_VehicleStatusVSID NUMBER(20,0);
+ CURSOR cur_Vehicle IS 
+ Select Vehicle.Make, VEHICLE.Model ,Vehicle_Status.VEHICLESTATUS, Vehicle_Status.VEHICLESTATUSID
+from Vehicle
+Inner JOIN Vehicle_Status ON Vehicle.VEHICLESTATUSID = Vehicle_Status.VEHICLESTATUSID
+Where VEHICLESTATUS = p_VehicleStatus;
+BEGIN OPEN cur_Vehicle;
+LOOP 
+FETCH cur_Vehicle INTO v_VehicleMake ,
+ v_VehicleModel,
+ v_VehicleStatusVS ,
+ v_VehicleStatusVSID;
+ EXIT WHEN cur_Vehicle%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Vehicle Info and Status: ' ||v_VehicleMake||' '||v_VehicleModel||' '||v_VehicleStatusVS||' '||v_VehicleStatusVSID);
+ END LOOP;
+ CLOSE cur_Vehicle;
+ END usp_VehicleByStatus;
+ SET SERVEROUTPUT ON;
+ EXECUTE usp_VehicleByStatus('Available');
+
+CREATE OR REPLACE PROCEDURE usp_CustomerByType (p_CustomerType IN CHAR)
+IS 
+ v_DRIVERLICENSENUM NUMBER(20,0);
+ v_DLEXPDATE DATE;
+ v_FIRSTNAME VARCHAR2(40);
+ v_LASTNAME VARCHAR2(40);
+ v_STREETADDRESS VARCHAR2(75);
+ v_CITY VARCHAR2(25);
+ v_STATE VARCHAR2(20);
+ v_COUNTRY VARCHAR2(30);
+ v_ZIPCODE VARCHAR2(10);
+ v_DOB DATE;
+ v_MOBILENUMBER NUMBER(11,0);
+ v_EMAIL VARCHAR2(60);
+ v_CUSTOMERTYPE VARCHAR2(30);
+ CURSOR cur_Customer IS 
+ Select DRIVERLICENSENUM ,
+DLEXPDATE ,
+FIRSTNAME ,
+LASTNAME ,
+STREETADDRESS ,
+CITY ,
+STATE ,
+COUNTRY ,
+ZIPCODE ,
+DOB ,
+MOBILENUMBER ,
+EMAIL ,
+CUSTOMERTYPE  
+from Customer 
+Where CUSTOMERTYPE = p_CustomerType;
+BEGIN 
+OPEN cur_Customer;
+LOOP 
+FETCH cur_Customer INTO v_DRIVERLICENSENUM ,
+ v_DLEXPDATE,
+ v_FIRSTNAME ,
+ v_LASTNAME ,
+ v_STREETADDRESS ,
+ v_CITY ,
+ v_STATE ,
+ v_COUNTRY ,
+ v_ZIPCODE ,
+ v_DOB ,
+ v_MOBILENUMBER ,
+ v_EMAIL ,
+ v_CUSTOMERTYPE ;
+ EXIT WHEN cur_Customer%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Private Customer Info: ' ||v_DRIVERLICENSENUM|| ' '||v_DLEXPDATE||' '||v_FIRSTNAME||' '||v_LASTNAME||' '||v_STREETADDRESS||' '
+ ||v_CITY||' '||v_STATE||' '||v_COUNTRY||' '||v_ZIPCODE||' '||v_DOB||' '||v_MOBILENUMBER||' '||v_EMAIL||' '||v_CUSTOMERTYPE);
+ END LOOP;
+ CLOSE cur_Customer;
+ END usp_CustomerByType;
+ SET SERVEROUTPUT ON;
+ EXECUTE usp_CustomerByType('Private');
+ 
+CREATE OR REPLACE PROCEDURE usp_RentalAgencyByCity (p_City IN CHAR)
+IS 
+ v_RentalAgencyCity VARCHAR2(20);
+ v_VehicleModel VARCHAR2(30);
+ v_VehicleMake VARCHAR2(25);
+ v_VehicleCurrentAgencyID NUMBER(20,0);
+ CURSOR cur_RentalAgency IS
+ Select Rental_Agency.City, Vehicle.Model, Vehicle.Make, Vehicle.CURRENTAGENCYID
+from RENTAL_AGENCY
+Inner Join Vehicle ON RENTAL_AGENCY.AGENCYID = Vehicle.CURRENTAGENCYID
+Where RENTAL_AGENCY.CITY = p_City;
+BEGIN 
+OPEN cur_RentalAgency;
+LOOP FETCH cur_RentalAgency INTO v_RentalAgencyCity,
+ v_VehicleModel ,
+ v_VehicleMake ,
+ v_VehicleCurrentAgencyID ;
+ EXIT WHEN cur_RentalAgency%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Rental Agency and Vehicle Info: ' ||v_RentalAgencyCity||' '||v_VehicleModel||' '||v_VehicleMake||' '||v_VehicleCurrentAgencyID);
+ END LOOP;
+ CLOSE cur_RentalAgency;
+ END usp_RentalAgencyByCity;
+ SET SERVEROUTPUT ON;
+ EXECUTE usp_RentalAgencyByCity('Brooklyn');
+
+CREATE OR REPLACE PROCEDURE usp_VehicleByMake (p_Make IN CHAR)
+IS 
+ v_VehicleMake VARCHAR2(25);
+ v_Model VARCHAR2(30);
+ v_CarTrunkcapacity NUMBER(5,2);
+ CURSOR cur_VehicleMake IS 
+ Select Vehicle.Make, Model, Car.Trunkcapacity
+from Vehicle 
+Inner Join Car ON Vehicle.VINNUMBER = Car.CVINNUMBER
+Where Make = P_Make;
+BEGIN 
+OPEN cur_VehicleMake;
+LOOP 
+FETCH cur_VehicleMake INTO  v_VehicleMake ,
+ v_Model ,
+ v_CarTrunkcapacity;
+ EXIT WHEN cur_VehicleMake%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Vehicle Info: ' ||v_VehicleMake|| ' '||v_Model||' '||v_CarTrunkcapacity);
+ END LOOP;
+ CLOSE cur_VehicleMake;
+ END usp_VehicleByMake;
+SET SERVEROUTPUT ON;
+EXECUTE usp_VehicleByMake('Ford');
+
+CREATE OR REPLACE PROCEDURE usp_CreditCardByNumber (p_CardNum IN NUMBER)
+IS 
+ v_CARDNUM NUMBER(16,0);
+ v_CARDOWNERNAME VARCHAR2(50);
+ v_MERCHANTNAME VARCHAR2(60);
+ v_EXPDATE DATE;
+ CURSOR cur_CreditCard IS 
+ Select CARDNUM ,
+CARDOWNERNAME ,
+MERCHANTNAME ,
+EXPDATE  
+from CREDITCARD
+Where CARDNUM = P_CardNum;
+BEGIN 
+OPEN cur_CreditCard;
+LOOP 
+FETCH cur_CreditCard INTO v_CARDNUM ,
+ v_CARDOWNERNAME,
+ v_MERCHANTNAME ,
+ v_EXPDATE;
+ EXIT WHEN cur_CreditCard%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('Credit Card Info: ' ||v_CARDNUM||' '||v_CARDOWNERNAME|| ' '||v_MERCHANTNAME||' '||v_EXPDATE);
+ END LOOP;
+ CLOSE cur_CreditCard;
+ END usp_CreditCardByNumber;
+ SET SERVEROUTPUT ON;
+ EXECUTE usp_CreditCardByNumber(1254789632154856);
+ 
+ 
+CREATE OR REPLACE PROCEDURE usp_EZPlusByNumber (p_EZPlusNumber IN NUMBER)
+IS 
+ v_EZPLUESEARNEDPOINTS NUMBER(10,0);
+ CURSOR cur_EZPLUESEARNEDPOINTS IS 
+ select ezplusearnedpoints 
+from EZPLUS
+where EZPLUSNUMBER = p_EZPlusNumber;
+BEGIN 
+ OPEN cur_EZPLUESEARNEDPOINTS;
+ LOOP 
+ FETCH cur_EZPLUESEARNEDPOINTS INTO v_EZPLUESEARNEDPOINTS;
+ EXIT WHEN cur_EZPLUESEARNEDPOINTS%NOTFOUND;
+ DBMS_OUTPUT.PUT_LINE('EZPlus Earned Points: ' ||v_EZPLUESEARNEDPOINTS);
+ END LOOP;
+ CLOSE cur_EZPLUESEARNEDPOINTS;
+ END  usp_EZPlusByNumber;
+SET SERVEROUTPUT ON;
+EXECUTE usp_EZPlusByNumber(3652789415);
+
+
+CREATE OR REPLACE PROCEDURE usp_DiscountByCode (p_DiscountCode IN NUMBER)
+IS 
+ v_discountdesc VARCHAR2(70);
+ CURSOR cur_DiscountDesc IS 
+ Select discountdesc 
+from discount 
+where DISCOUNTCODE = p_DiscountCode;
+BEGIN 
+ OPEN cur_DiscountDesc;
+LOOP 
+FETCH cur_DiscountDesc INTO v_discountdesc;
+EXIT WHEN cur_DiscountDesc%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE('Discount Description: ' ||v_discountdesc);
+END LOOP;
+CLOSE cur_DiscountDesc;
+END usp_DiscountByCode;
+SET SERVEROUTPUT ON;
+EXECUTE usp_DiscountByCode(1254789584);
+
+CREATE OR REPLACE PROCEDURE usp_EZPlusBySum (p_EZPlusEarnedPoints IN NUMBER)
+IS 
+ v_EZPLUSEARNEDPOINTS NUMBER(10,0);
+CURSOR cur_EZPlus IS 
+SELECT SUM(ezplusearnedpoints)
+from EZPLUS;
+BEGIN 
+ OPEN cur_EZPlus;
+LOOP 
+FETCH cur_EZPlus INTO v_EZPLUSEARNEDPOINTS;
+EXIT WHEN cur_EZPlus%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE('Total EZPlus Points: '||v_EZPLUSEARNEDPOINTS);
+ END LOOP;
+ CLOSE cur_EZPlus;
+ END usp_EZPlusBySum;
+ 
+ SET SERVEROUTPUT ON;
+ EXECUTE USP_EZPlusBySum(426);
+
+CREATE OR REPLACE PROCEDURE usp_VehicleByYear(p_Year IN NUMBER)
+IS 
+ v_VINNUMBER NUMBER(10,0);
+ v_MAKE VARCHAR2(25);
+ v_MODEL VARCHAR2(30);
+ v_YEAR NUMBER(4,0);
+ v_RENTALCATEGORYID NUMBER(20,0);
+ v_COLOR VARCHAR2(12 );
+ v_PLATENUMBER VARCHAR2(12);
+ v_MILEAGE NUMBER(5,0);
+ v_TRANSMISSIONTYPE VARCHAR2(20);
+ v_SEATCAPACITY NUMBER(3,0);
+ v_DAILYRENTALCOST NUMBER(5,0);
+ v_VEHICLESTATUSID NUMBER(20,0);
+ v_ASSIGNEDAGENCYID NUMBER(20,0);
+ v_CURRENTAGENCYID NUMBER(20,0);
+ v_VEHICLETYPE VARCHAR2(20);
+ 
+CURSOR cur_Vehicle IS 
+  
+Select VINNUMBER ,
+MAKE ,
+MODEL ,
+YEAR ,
+RENTALCATEGORYID ,
+COLOR ,
+PLATENUMBER ,
+MILEAGE ,
+TRANSMISSIONTYPE ,
+SEATCAPACITY ,
+DAILYRENTALCOST ,
+VEHICLESTATUSID ,
+ASSIGNEDAGENCYID ,
+CURRENTAGENCYID ,
+VEHICLETYPE 
+from VEHICLE
+Where Year = p_Year;
+BEGIN 
+ OPEN cur_Vehicle;
+ LOOP 
+  FETCH cur_Vehicle INTO v_VINNUMBER,
+ v_MAKE,
+ v_MODEL, 
+ v_YEAR, 
+ v_RENTALCATEGORYID ,
+ v_COLOR ,
+ v_PLATENUMBER ,
+ v_MILEAGE ,
+ v_TRANSMISSIONTYPE ,
+ v_SEATCAPACITY ,
+ v_DAILYRENTALCOST ,
+ v_VEHICLESTATUSID ,
+ v_ASSIGNEDAGENCYID ,
+ v_CURRENTAGENCYID ,
+ v_VEHICLETYPE ;
+ EXIT WHEN cur_VEHICLE%NOTFOUND;
+ 
+ DBMS_OUTPUT.PUT_LINE('Vehicle info: '||v_VINNUMBER|| ' '||v_MAKE|| ' '||v_MODEL|| ' '||v_YEAR|| ' '||v_RENTALCATEGORYID|| ' '||v_COLOR|| ' '||v_PLATENUMBER|| 
+ ' '||v_MILEAGE|| ' '||v_TRANSMISSIONTYPE|| ' '||v_SEATCAPACITY|| ' '||v_DAILYRENTALCOST|| ' '||v_VEHICLESTATUSID|| ' '||v_ASSIGNEDAGENCYID|| ' '||v_CURRENTAGENCYID||
+ ' '||v_VEHICLETYPE);
+ END LOOP;
+ CLOSE cur_VEHICLE;
+ END usp_VehicleByYear;
+ 
+ SET SERVEROUTPUT ON;
+ EXECUTE USP_VEHICLEBYYEAR(2018);
